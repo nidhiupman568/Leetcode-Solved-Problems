@@ -1,0 +1,27 @@
+class Solution {
+private:
+    void generateStrings(int n, string& current, vector<string>& result) {
+        if (current.length() == n) {
+            result.push_back(current);
+            return;
+        }
+        
+        if (current.empty() || current.back() == '1') {
+            current.push_back('0');
+            generateStrings(n, current, result);
+            current.pop_back();
+        }
+        
+        current.push_back('1');
+        generateStrings(n, current, result);
+        current.pop_back();
+    }
+
+public:
+    vector<string> validStrings(int n) {
+        vector<string> result;
+        string current;
+        generateStrings(n, current, result);
+        return result;
+    }
+};
