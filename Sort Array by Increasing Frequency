@@ -1,0 +1,23 @@
+class Solution {
+public:
+    vector<int> frequencySort(vector<int>& nums) {
+        // Count the frequency of each number
+        unordered_map<int, int> freq;
+        for (int num : nums) {
+            freq[num]++;
+        }
+        
+        // Custom comparator for sorting
+        auto comp = [&](int a, int b) {
+            if (freq[a] != freq[b]) {
+                return freq[a] < freq[b];  // Sort by increasing frequency
+            }
+            return a > b;  // If frequencies are equal, sort by decreasing value
+        };
+        
+        // Sort the array using the custom comparator
+        sort(nums.begin(), nums.end(), comp);
+        
+        return nums;
+    }
+};
