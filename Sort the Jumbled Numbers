@@ -1,0 +1,40 @@
+class Solution {
+public:
+    vector<int> sortJumbled(vector<int>& mapping, vector<int>& nums) {
+        vector<pair<int, int>> mapped;
+        int n = nums.size();
+        
+        // Function to map a number according to the given mapping
+        auto mapNumber = [&](int num) {
+            if (num == 0) return mapping[0];
+            
+            int result = 0;
+            int power = 1;
+            
+            while (num > 0) {
+                int digit = num % 10;
+                result += mapping[digit] * power;
+                power *= 10;
+                num /= 10;
+            }
+            
+            return result;
+        };
+        
+        // Map each number and store with its original index
+        for (int i = 0; i < n; i++) {
+            mapped.push_back({mapNumber(nums[i]), i});
+        }
+        
+        // Sort based on mapped values
+        stable_sort(mapped.begin(), mapped.end());
+        
+        // Create the result vector
+        vector<int> result;
+        for (auto& p : mapped) {
+            result.push_back(nums[p.second]);
+        }
+        
+        return result;
+    }
+};
