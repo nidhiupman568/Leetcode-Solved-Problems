@@ -1,0 +1,41 @@
+#include <vector>
+#include <string>
+#include <queue>
+#include <limits>
+#include <algorithm>
+
+class Solution {
+public:
+    long long minimumCost(string source, string target, vector<char>& original, vector<char>& changed, vector<int>& cost) {
+        const int INF = 1e9;
+        vector<vector<int>> dist(26, vector<int>(26, INF));
+        
+        // Initialize the distance matrix
+        for (int i = 0; i < original.size(); i++) {
+            int from = original[i] - 'a';
+            int to = changed[i] - 'a';
+            dist[from][to] = std::min(dist[from][to], cost[i]);
+        }
+        
+        // Floyd-Warshall algorithm to find shortest paths
+        for (int k = 0; k < 26; k++) {
+            for (int i = 0; i < 26; i++) {
+                for (int j = 0; j < 26; j++) {
+                    dist[i][j] = std::min(dist[i][j], dist[i][k] + dist[k][j]);
+                }
+            }
+        }
+        
+        long long totalCost = 0;
+        for (int i = 0; i < source.length(); i++) {
+            if (source[i] != target[i]) {
+                int from = source[i] - 'a';
+                int to = target[i] - 'a';
+                if (dist[from][to] == INF) return -1;
+                totalCost += dist[from][to];
+            }
+        }
+        
+        return totalCost;
+    }
+};
