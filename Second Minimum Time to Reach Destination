@@ -1,0 +1,49 @@
+#include <vector>
+#include <queue>
+#include <limits>
+
+class Solution {
+public:
+    int secondMinimum(int n, vector<vector<int>>& edges, int time, int change) {
+        // Build adjacency list
+        vector<vector<int>> graph(n + 1);
+        for (const auto& edge : edges) {
+            graph[edge[0]].push_back(edge[1]);
+            graph[edge[1]].push_back(edge[0]);
+        }
+        
+        // Initialize distances
+        vector<vector<int>> dist(n + 1, vector<int>(2, numeric_limits<int>::max()));
+        dist[1][0] = 0;
+        
+        // BFS
+        queue<pair<int, int>> q;
+        q.push({1, 0});
+        
+        while (!q.empty()) {
+            int node = q.front().first;
+            int currTime = q.front().second;
+            q.pop();
+            
+            // Calculate waiting time due to traffic signal
+            int waitTime = 0;
+            if ((currTime / change) % 2 == 1) {
+                waitTime = change - (currTime % change);
+            }
+            int nextTime = currTime + waitTime + time;
+            
+            for (int neighbor : graph[node]) {
+                if (nextTime < dist[neighbor][0]) {
+                    dist[neighbor][1] = dist[neighbor][0];
+                    dist[neighbor][0] = nextTime;
+                    q.push({neighbor, nextTime});
+                } else if (nextTime > dist[neighbor][0] && nextTime < dist[neighbor][1]) {
+                    dist[neighbor][1] = nextTime;
+                    q.push({neighbor, nextTime});
+                }
+            }
+        }
+        
+        return dist[n][1];
+    }
+};
