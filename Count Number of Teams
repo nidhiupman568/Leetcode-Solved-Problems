@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int numTeams(vector<int>& rating) {
+        int n = rating.size();
+        int result = 0;
+        
+        for (int j = 1; j < n - 1; ++j) {
+            int leftSmaller = 0, leftLarger = 0;
+            int rightSmaller = 0, rightLarger = 0;
+            
+            // Count elements on the left
+            for (int i = 0; i < j; ++i) {
+                if (rating[i] < rating[j]) leftSmaller++;
+                if (rating[i] > rating[j]) leftLarger++;
+            }
+            
+            // Count elements on the right
+            for (int k = j + 1; k < n; ++k) {
+                if (rating[k] < rating[j]) rightSmaller++;
+                if (rating[k] > rating[j]) rightLarger++;
+            }
+            
+            // Add to result
+            result += leftSmaller * rightLarger + leftLarger * rightSmaller;
+        }
+        
+        return result;
+    }
+};
