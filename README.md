@@ -4,7 +4,7 @@
 Hello! I'm excited to share my progress and accomplishments on LeetCode with you. 🚀✨
 
 ## 🌐 About Me
-🏆🌟 I solve the **Problem of the Day** on LeetCode daily 🗓️🧩 and have successfully tackled over **150 interview questions**. 💪🧠 Additionally, I've completed **Love Babbar's 450 DSA** sheet 📚 and **Fraz's 180 DSA** sheet 📘. My primary coding language is **C++** 💻, but I have also solved many problems in **Java** ☕. 🏆🌟
+🏆🌟 I solve the **Problem of the Day** on LeetCode daily 🗓️🧩 and have successfully tackled over **150 interview questions**. 💪🧠 Additionally, I've completed **Love Babbar's 450 DSA** sheet 📚 and **Striver's 180 DSA** sheet 📘. My primary coding language is **C++** 💻, but I have also solved many problems in **Java** ☕. 🏆🌟
 
 ## 🏆 My Achievements
 - Solved 150+ LeetCode interview questions 🔥
