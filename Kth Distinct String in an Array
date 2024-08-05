@@ -1,0 +1,25 @@
+class Solution {
+public:
+    string kthDistinct(vector<string>& arr, int k) {
+        unordered_map<string, int> frequency;
+        
+        // Count the frequency of each string
+        for (const string& s : arr) {
+            frequency[s]++;
+        }
+        
+        // Find the kth distinct string
+        int distinctCount = 0;
+        for (const string& s : arr) {
+            if (frequency[s] == 1) {
+                distinctCount++;
+                if (distinctCount == k) {
+                    return s;
+                }
+            }
+        }
+        
+        // If there are fewer than k distinct strings
+        return "";
+    }
+};
