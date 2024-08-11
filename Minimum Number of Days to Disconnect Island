@@ -1,0 +1,64 @@
+class Solution {
+private:
+    int m, n;
+    vector<int> dx = {-1, 1, 0, 0};
+    vector<int> dy = {0, 0, -1, 1};
+    
+    void dfs(vector<vector<int>>& grid, int x, int y, vector<vector<bool>>& visited, int& count) {
+        if (x < 0 || x >= m || y < 0 || y >= n || grid[x][y] == 0 || visited[x][y]) return;
+        
+        visited[x][y] = true;
+        count++;
+        
+        for (int i = 0; i < 4; i++) {
+            dfs(grid, x + dx[i], y + dy[i], visited, count);
+        }
+    }
+    
+    bool isCriticalCell(vector<vector<int>>& grid, int x, int y) {
+        int neighbors = 0;
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx >= 0 && nx < m && ny >= 0 && ny < n && grid[nx][ny] == 1) {
+                neighbors++;
+            }
+        }
+        return neighbors <= 1;
+    }
+    
+public:
+    int minDays(vector<vector<int>>& grid) {
+        m = grid.size();
+        n = grid[0].size();
+        
+        vector<vector<bool>> visited(m, vector<bool>(n, false));
+        int totalLand = 0, connectedLand = 0;
+        
+        // Count total land cells and check connectivity
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    totalLand++;
+                    if (!visited[i][j]) {
+                        if (connectedLand > 0) return 0; // More than one island
+                        dfs(grid, i, j, visited, connectedLand);
+                    }
+                }
+            }
+        }
+        
+        if (totalLand != connectedLand) return 0; // Disconnected or no land
+        if (totalLand <= 2) return totalLand; // Special cases
+        
+        // Check for critical cells
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1 && isCriticalCell(grid, i, j)) {
+                    return 1;
+                }
+            }
+        }
+        
+        return 2;
+    }
+};
