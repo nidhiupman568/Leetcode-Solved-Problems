@@ -1,0 +1,111 @@
+/*class KthLargest {
+public:
+    KthLargest(int k, vector<int>& nums) {
+        
+    }
+    
+    int add(int val) {
+        
+    }
+};
+
+/**
+ * Your KthLargest object will be instantiated and called as such:
+ * KthLargest* obj = new KthLargest(k, nums);
+ * int param_1 = obj->add(val);
+ */
+
+    //  the TC of the code is O(n*log(k)) for initialization and O(log(k)) for each add() operation.
+   // The space complexity is O(k).
+
+/*class KthLargest {
+public:
+     
+    priority_queue<int,vector<int>,greater<int>> pq;
+    int sz;
+    KthLargest(int k, vector<int>& nums) {
+
+         sz = k;
+
+        for(int i=0;i<nums.size();i++){
+            pq.push(nums[i]);
+        }
+
+       
+        
+    }
+    
+    int add(int val) {
+        
+       pq.push(val);
+        while(pq.size()>sz){
+            pq.pop();
+        }
+        return pq.top();
+    }
+};
+
+/**
+ * Your KthLargest object will be instantiated and called as such:
+ * KthLargest* obj = new KthLargest(k, nums);
+ * int param_1 = obj->add(val);
+ */
+
+ class KthLargest {
+private:
+    int k;
+    vector<int> data;
+
+public:
+    KthLargest(int k, vector<int>& nums) : k(k) {
+        data.reserve(k);
+        for (int num : nums) {
+            add(num);
+        }
+    }
+    
+    int add(int val) {
+        if (data.size() < k) {
+            data.push_back(val);
+            push_up(data.size() - 1);
+        } else if (val > data[0]) {
+            data[0] = val;
+            push_down(0);
+        }
+        return data.size() == k ? data[0] : INT_MIN;
+    }
+
+private:
+    void push_up(int i) {
+        while (i > 0) {
+            int parent = (i - 1) / 2;
+            if (data[parent] > data[i]) {
+                swap(data[parent], data[i]);
+                i = parent;
+            } else {
+                break;
+            }
+        }
+    }
+
+    void push_down(int i) {
+        int size = data.size();
+        while (true) {
+            int smallest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+            
+            if (left < size && data[left] < data[smallest]) {
+                smallest = left;
+            }
+            if (right < size && data[right] < data[smallest]) {
+                smallest = right;
+            }
+            if (smallest == i) {
+                break;
+            }
+            swap(data[i], data[smallest]);
+            i = smallest;
+        }
+    }
+};
