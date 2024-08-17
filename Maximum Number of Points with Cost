@@ -1,0 +1,28 @@
+class Solution {
+public:
+    long long maxPoints(vector<vector<int>>& points) {
+        int m = points.size(), n = points[0].size();
+        vector<long long> dp(n);
+        
+        for (int i = 0; i < m; ++i) {
+            vector<long long> newDp(n);
+            for (int j = 0; j < n; ++j) {
+                newDp[j] = points[i][j] + dp[j];
+            }
+            
+            // Left to right
+            for (int j = 1; j < n; ++j) {
+                newDp[j] = max(newDp[j], newDp[j-1] - 1);
+            }
+            
+            // Right to left
+            for (int j = n - 2; j >= 0; --j) {
+                newDp[j] = max(newDp[j], newDp[j+1] - 1);
+            }
+            
+            dp = move(newDp);
+        }
+        
+        return *max_element(dp.begin(), dp.end());
+    }
+};
