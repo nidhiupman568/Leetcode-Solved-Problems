@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int minSteps(int n) {
+        if (n == 1) return 0;
+        
+        int steps = 0;
+        
+        // Check for factors of 2 separately
+        while (n % 2 == 0) {
+            steps += 2;
+            n /= 2;
+        }
+        
+        // Check odd factors up to sqrt(n)
+        for (int i = 3; i * i <= n; i += 2) {
+            while (n % i == 0) {
+                steps += i;
+                n /= i;
+            }
+        }
+        
+        // If n > 1, it is a prime factor larger than sqrt(n)
+        if (n > 1) steps += n;
+        
+        return steps;
+    }
+};
