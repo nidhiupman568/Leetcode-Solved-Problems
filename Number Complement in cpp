@@ -1,0 +1,8 @@
+class Solution {
+public:
+    int findComplement(int num) {
+        unsigned mask = ~0;
+        mask >>= __builtin_clz(num);
+        return ~num & mask;
+    }
+};
