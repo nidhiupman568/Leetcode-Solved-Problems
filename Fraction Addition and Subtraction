@@ -1,0 +1,53 @@
+class Solution {
+private:
+    // Helper function to find the greatest common divisor (GCD)
+    int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+
+    // Helper function to add two fractions
+    pair<int, int> addFractions(int num1, int den1, int num2, int den2) {
+        int newDen = den1 * den2;
+        int newNum = num1 * den2 + num2 * den1;
+        int g = gcd(abs(newNum), newDen);
+        return {newNum / g, newDen / g};
+    }
+
+public:
+    string fractionAddition(string expression) {
+        int num = 0, den = 1;
+        int i = 0, n = expression.length();
+        
+        while (i < n) {
+            int sign = 1;
+            if (expression[i] == '+' || expression[i] == '-') {
+                sign = (expression[i] == '+') ? 1 : -1;
+                i++;
+            }
+            
+            int currNum = 0;
+            while (i < n && isdigit(expression[i])) {
+                currNum = currNum * 10 + (expression[i] - '0');
+                i++;
+            }
+            currNum *= sign;
+            
+            i++; // Skip '/'
+            
+            int currDen = 0;
+            while (i < n && isdigit(expression[i])) {
+                currDen = currDen * 10 + (expression[i] - '0');
+                i++;
+            }
+            
+            auto [newNum, newDen] = addFractions(num, den, currNum, currDen);
+            num = newNum;
+            den = newDen;
+        }
+        
+        if (num == 0) return "0/1";
+        
+        int g = gcd(abs(num), den);
+        return to_string(num / g) + "/" + to_string(den / g);
+    }
+};
