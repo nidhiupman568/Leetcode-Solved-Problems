@@ -1,0 +1,44 @@
+#include <vector>
+#include <queue>
+#include <cmath>
+
+class Solution {
+public:
+    double maxProbability(int n, vector<vector<int>>& edges, vector<double>& succProb, int start, int end) {
+        // Create adjacency list
+        vector<vector<pair<int, double>>> adj(n);
+        for (int i = 0; i < edges.size(); i++) {
+            adj[edges[i][0]].push_back({edges[i][1], succProb[i]});
+            adj[edges[i][1]].push_back({edges[i][0], succProb[i]});
+        }
+        
+        // Initialize probability array
+        vector<double> prob(n, 0.0);
+        prob[start] = 1.0;
+        
+        // Priority queue to store {probability, node}
+        priority_queue<pair<double, int>> pq;
+        pq.push({1.0, start});
+        
+        while (!pq.empty()) {
+            double currProb = pq.top().first;
+            int currNode = pq.top().second;
+            pq.pop();
+            
+            // Lazy deletion: skip outdated entries
+            if (currProb < prob[currNode]) continue;
+            
+            if (currNode == end) return currProb;
+            
+            for (auto& [nextNode, edgeProb] : adj[currNode]) {
+                double newProb = currProb * edgeProb;
+                if (newProb > prob[nextNode]) {
+                    prob[nextNode] = newProb;
+                    pq.push({newProb, nextNode});
+                }
+            }
+        }
+        
+        return 0.0;
+    }
+};
