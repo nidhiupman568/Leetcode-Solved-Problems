@@ -1,0 +1,39 @@
+class Solution {
+private:
+    static constexpr int dx[4] = {-1, 1, 0, 0};
+    static constexpr int dy[4] = {0, 0, -1, 1};
+    int m, n;
+    
+    bool dfs(const vector<vector<int>>& grid1, vector<vector<int>>& grid2, int i, int j) {
+        if (grid2[i][j] == 0) return true;
+        
+        grid2[i][j] = 0;  // Mark as visited
+        bool is_sub_island = grid1[i][j];
+        
+        for (int d = 0; d < 4; ++d) {
+            int ni = i + dx[d], nj = j + dy[d];
+            if (ni >= 0 && ni < m && nj >= 0 && nj < n) {
+                is_sub_island &= dfs(grid1, grid2, ni, nj);
+            }
+        }
+        
+        return is_sub_island;
+    }
+    
+public:
+    int countSubIslands(vector<vector<int>>& grid1, vector<vector<int>>& grid2) {
+        m = grid1.size();
+        n = grid1[0].size();
+        int count = 0;
+        
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (grid2[i][j] == 1) {
+                    count += dfs(grid1, grid2, i, j);
+                }
+            }
+        }
+        
+        return count;
+    }
+};
