@@ -1,0 +1,44 @@
+class DisjointSet {
+private:
+    vector<int> parent, rank;
+
+public:
+    DisjointSet(int n) : parent(n), rank(n, 0) {
+        for (int i = 0; i < n; ++i) parent[i] = i;
+    }
+    
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+    
+    void unite(int x, int y) {
+        int px = find(x), py = find(y);
+        if (px == py) return;
+        if (rank[px] < rank[py]) parent[px] = py;
+        else if (rank[px] > rank[py]) parent[py] = px;
+        else {
+            parent[py] = px;
+            ++rank[px];
+        }
+    }
+};
+
+class Solution {
+public:
+    int removeStones(vector<vector<int>>& stones) {
+        int n = stones.size();
+        DisjointSet ds(20001);  // Max possible value for x or y is 10^4
+        
+        for (const auto& stone : stones) {
+            ds.unite(stone[0], stone[1] + 10001);  // Offset y-coordinates to avoid collision
+        }
+        
+        unordered_set<int> uniqueGroups;
+        for (const auto& stone : stones) {
+            uniqueGroups.insert(ds.find(stone[0]));
+        }
+        
+        return n - uniqueGroups.size();
+    }
+};
