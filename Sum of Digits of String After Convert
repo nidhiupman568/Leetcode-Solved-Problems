@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int getLucky(string s, int k) {
+        string converted = "";
+        
+        // Convert string to numbers
+        for (char c : s) {
+            converted += to_string(c - 'a' + 1);
+        }
+        
+        int result = 0;
+        
+        // Perform k transformations
+        for (int i = 0; i < k; i++) {
+            result = 0;
+            for (char digit : converted) {
+                result += digit - '0';
+            }
+            converted = to_string(result);
+        }
+        
+        return result;
+    }
+};
