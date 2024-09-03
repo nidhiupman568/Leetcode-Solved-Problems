@@ -1,0 +1,87 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+private:
+    array<long long, 21> f{1};
+    static constexpr int MAX_N{20};
+
+    auto genPal(int n) -> vector<long long> {
+        if (n == 0) return {};
+        vector<long long> pal;
+        int hl = (n + 1) / 2;
+        long long fh = n == 1 ? 0 : pow(10, hl - 1);
+        while (fh < pow(10, hl)) {
+            string s = to_string(fh);
+            (n % 2 == 0) ? s.append(s.rbegin(), s.rend()) : s.append(next(s.rbegin()), s.rend());
+            if (s.length() == static_cast<size_t>(n)) pal.emplace_back(stoll(s));
+            ++fh;
+        }
+        return pal;
+    }
+
+    auto getCounts(long long num, int n) -> array<int, 10> {
+        array<int, 10> c{};
+        string s = to_string(num);
+        s.insert(0, n - s.length(), '0');
+        for_each(s.begin(), s.end(), [&c](char d) { ++c[d - '0']; });
+        return c;
+    }
+
+    auto countNums(const array<int, 10>& c, int n) -> long long {
+        long long t{0};
+        for (int d = 1; d < 10; ++d) {
+            if (c[d] == 0) continue;
+            array<int, 10> nc = c;
+            --nc[d];
+            if (any_of(nc.begin(), nc.end(), [](int cnt) { return cnt < 0; })) continue;
+            long long a = f[n - 1];
+            for_each(nc.begin(), nc.end(), [this, &a](int count) { a /= f[count]; });
+            t += a;
+        }
+        return t;
+    }
+
+    auto divByK(long long num, int k) -> bool { return !(num % k); }
+    
+    auto sumDig(long long num) -> int {
+        int sum{0};
+        do {
+            sum += num % 10;
+            num /= 10;
+        } while (num);
+        return sum;
+    }
+
+public:
+    Solution() {
+        generate(next(f.begin()), f.end(), [i = 1, prev = 1LL]() mutable {
+            return prev *= i++;
+        });
+    }
+
+    auto countGoodIntegers(int n, int k) -> long long {
+        set<array<int, 10>> uc;
+        for (const auto& p : genPal(n)) {
+            if (divByK(p, k)) uc.emplace(getCounts(p, n));
+        }
+        return accumulate(uc.begin(), uc.end(), 0LL, [this, n](long long s, const auto& c) {
+            return s + countNums(c, n);
+        });
+    }
+
+    auto analyzePal(int n, int k) -> void {
+        for (const auto& p : genPal(n)) {
+            cout << p << ": " << (divByK(p, k) ? "Divisible" : "Not divisible")
+                 << " by " << k << ", Sum: " << sumDig(p) << '\n';
+        }
+    }
+
+    auto largestDivPal(int n, int k) -> long long {
+        const auto pal = genPal(n);
+        auto it = find_if(pal.crbegin(), pal.crend(), [this, k](long long p) {
+            return divByK(p, k);
+        });
+        return it != pal.crend() ? *it : -1;
+    }
+};
