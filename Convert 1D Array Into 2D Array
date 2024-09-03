@@ -1,0 +1,17 @@
+class Solution {
+public:
+    vector<vector<int>> construct2DArray(vector<int>& original, int m, int n) {
+        if (original.size() != m * n) return {};
+        
+        vector<vector<int>> result;
+        result.reserve(m);
+        
+        auto it = original.data();
+        for (int i = 0; i < m; ++i) {
+            result.emplace_back(it, it + n);
+            it += n;
+        }
+        
+        return result;
+    }
+};
