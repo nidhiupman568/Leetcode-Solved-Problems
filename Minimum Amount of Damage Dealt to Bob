@@ -1,0 +1,42 @@
+#include <vector>
+#include <algorithm>
+#include <numeric>
+#include <cmath>
+#include <iostream>
+
+struct Enemy { int damage, healthPoints; };
+
+class Solution {
+private:
+    static int calcTime(const Enemy& e, int ap) { return std::ceil(static_cast<double>(e.healthPoints) / ap); }
+
+public:
+    bool compareEnemies(const Enemy& a, const Enemy& b, int ap) const {
+        return static_cast<long long>(a.damage) * calcTime(b, ap) > static_cast<long long>(b.damage) * calcTime(a, ap);
+    }
+
+    long long minDamage(int ap, const std::vector<int>& dmg, const std::vector<int>& hp) const {
+        std::vector<Enemy> enemies;
+        for (size_t i = 0; i < dmg.size(); ++i) enemies.push_back({dmg[i], hp[i]});
+
+        std::sort(enemies.begin(), enemies.end(), [this, ap](const auto& a, const auto& b) { return compareEnemies(a, b, ap); });
+
+        long long cumulativeDPS = std::accumulate(enemies.begin(), enemies.end(), 0LL, [](long long sum, const auto& e) { return sum + e.damage; });
+
+        return std::accumulate(enemies.begin(), enemies.end(), 0LL, [&](long long totalDamage, const auto& e) {
+            int time = calcTime(e, ap);
+            long long damage = cumulativeDPS * time;
+            cumulativeDPS -= e.damage;
+            return totalDamage + damage;
+        });
+    }
+
+    void simulateBattle(int ap, const std::vector<Enemy>& enemies) const {
+        auto remainingEnemies = enemies;
+        for (int turn = 1; !remainingEnemies.empty(); ++turn) {
+            std::cout << "Turn " << turn << ": " << remainingEnemies.size() << " enemies remaining\n";
+            remainingEnemies.erase(std::remove_if(remainingEnemies.begin(), remainingEnemies.end(),
+                [ap](Enemy& e) { return (e.healthPoints -= ap) <= 0; }), remainingEnemies.end());
+        }
+    }
+};
