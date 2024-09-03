@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int generateKey(int num1, int num2, int num3) {
+        // Convert numbers to strings with leading zeros
+        string s1 = to_string(10000 + num1).substr(1);
+        string s2 = to_string(10000 + num2).substr(1);
+        string s3 = to_string(10000 + num3).substr(1);
+        
+        // Generate the key
+        string key;
+        for (int i = 0; i < 4; ++i) {
+            key += min({s1[i], s2[i], s3[i]});
+        }
+        
+        // Convert key to integer and return
+        return stoi(key);
+    }
+};
