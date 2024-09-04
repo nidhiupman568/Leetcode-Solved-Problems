@@ -1,0 +1,36 @@
+class Solution {
+public:
+    int robotSim(vector<int>& commands, vector<vector<int>>& obstacles) {
+        int dx[4] = {0, 1, 0, -1};
+        int dy[4] = {1, 0, -1, 0};
+        int x = 0, y = 0, di = 0;
+        
+        unordered_set<long long> obstacleSet;
+        for (const auto& obstacle : obstacles) {
+            long long ox = obstacle[0], oy = obstacle[1];
+            obstacleSet.insert((ox + 30000) * 60001 + (oy + 30000));
+        }
+        
+        int maxDistSquared = 0;
+        for (int cmd : commands) {
+            if (cmd == -2) {
+                di = (di - 1 + 4) % 4;
+            } else if (cmd == -1) {
+                di = (di + 1) % 4;
+            } else {
+                for (int k = 0; k < cmd; ++k) {
+                    int nx = x + dx[di];
+                    int ny = y + dy[di];
+                    long long code = (nx + 30000LL) * 60001 + (ny + 30000);
+                    if (obstacleSet.count(code) == 0) {
+                        x = nx;
+                        y = ny;
+                        maxDistSquared = max(maxDistSquared, x*x + y*y);
+                    }
+                }
+            }
+        }
+        
+        return maxDistSquared;
+    }
+};
