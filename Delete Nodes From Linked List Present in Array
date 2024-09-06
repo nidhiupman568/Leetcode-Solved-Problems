@@ -1,0 +1,26 @@
+class Solution {
+public:
+    ListNode* modifiedList(vector<int>& nums, ListNode* head) {
+        if (!head) return nullptr;
+        
+        // Use array for faster lookup
+        bool numSet[100001] = {false};
+        for (int num : nums) numSet[num] = true;
+        
+        ListNode dummy(0);
+        dummy.next = head;
+        ListNode* prev = &dummy;
+        
+        while (prev->next) {
+            if (numSet[prev->next->val]) {
+                ListNode* temp = prev->next;
+                prev->next = temp->next;
+                delete temp;
+            } else {
+                prev = prev->next;
+            }
+        }
+        
+        return dummy.next;
+    }
+};
