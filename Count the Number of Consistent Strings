@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int countConsistentStrings(string allowed, vector<string>& words) {
+        uint32_t mask = 0;
+        for (char c : allowed) mask |= 1u << (c & 31);
+
+        int count = 0;
+        for (const auto& word : words) {
+            uint32_t wordMask = 0;
+            const char* ptr = word.c_str();
+            while (*ptr) wordMask |= 1u << (*ptr++ & 31);
+            count += !(wordMask & ~mask);
+        }
+
+        return count;
+    }
+};
