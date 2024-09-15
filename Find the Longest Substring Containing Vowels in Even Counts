@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int findTheLongestSubstring(string s) {
+        vector<int> state(32, -1);
+        state[0] = 0;
+        int maxLen = 0, currState = 0;
+        
+        for (int i = 0; i < s.length(); i++) {
+            switch (s[i]) {
+                case 'a': currState ^= 1; break;
+                case 'e': currState ^= 2; break;
+                case 'i': currState ^= 4; break;
+                case 'o': currState ^= 8; break;
+                case 'u': currState ^= 16; break;
+            }
+            
+            if (state[currState] != -1) {
+                maxLen = max(maxLen, i + 1 - state[currState]);
+            } else {
+                state[currState] = i + 1;
+            }
+        }
+        
+        return maxLen;
+    }
+};
