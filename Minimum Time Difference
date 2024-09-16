@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int findMinDifference(vector<string>& timePoints) {
+        if (timePoints.size() > 1440) return 0;
+        
+        uint64_t seen[23] = {0}; // 1440 bits using 23 64-bit integers
+        int minTime = 1440, maxTime = 0;
+        
+        for (const string& t : timePoints) {
+            int minutes = ((t[0] & 15) * 10 + (t[1] & 15)) * 60 + (t[3] & 15) * 10 + (t[4] & 15);
+            int idx = minutes >> 6, bit = minutes & 63;
+            if (seen[idx] & (1ULL << bit)) return 0;
+            seen[idx] |= 1ULL << bit;
+            minTime = min(minTime, minutes);
+            maxTime = max(maxTime, minutes);
+        }
+        
+        int prev = -1, minDiff = 1440;
+        for (int i = minTime; i <= maxTime; ++i) {
+            if (seen[i >> 6] & (1ULL << (i & 63))) {
+                if (prev != -1) minDiff = min(minDiff, i - prev);
+                prev = i;
+            }
+        }
+        
+        return min(minDiff, 1440 + minTime - maxTime);
+    }
+};
