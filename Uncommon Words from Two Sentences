@@ -1,0 +1,34 @@
+class Solution {
+public:
+    vector<string> uncommonFromSentences(string s1, string s2) {
+        unordered_map<string_view, int> wordCount;
+        vector<string> uncommonWords;
+        
+        // Lambda function to process each sentence
+        auto processSentence = [&](const string& s) {
+            size_t start = 0, end = 0;
+            while ((end = s.find(' ', start)) != string::npos) {
+                string_view word(s.data() + start, end - start);
+                wordCount[word]++;
+                start = end + 1;
+            }
+            string_view word(s.data() + start, s.length() - start);
+            wordCount[word]++;
+        };
+        
+        processSentence(s1);
+        processSentence(s2);
+        
+        // Reserve space for uncommon words (at most, all words are uncommon)
+        uncommonWords.reserve(wordCount.size());
+        
+        // Find uncommon words
+        for (const auto& [word, count] : wordCount) {
+            if (count == 1) {
+                uncommonWords.emplace_back(word);
+            }
+        }
+        
+        return uncommonWords;
+    }
+};
