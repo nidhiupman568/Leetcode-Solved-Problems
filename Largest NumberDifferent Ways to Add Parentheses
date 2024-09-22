@@ -1,0 +1,40 @@
+class Solution {
+public:
+    vector<int> diffWaysToCompute(string expression) {
+        unordered_map<string, vector<int>> memo;
+        return computeWithMemo(expression, memo);
+    }
+    
+private:
+    vector<int> computeWithMemo(const string& expression, unordered_map<string, vector<int>>& memo) {
+        if (memo.find(expression) != memo.end()) {
+            return memo[expression];
+        }
+        
+        vector<int> results;
+        bool hasOperator = false;
+        
+        for (int i = 0; i < expression.length(); i++) {
+            if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*') {
+                hasOperator = true;
+                vector<int> left = computeWithMemo(expression.substr(0, i), memo);
+                vector<int> right = computeWithMemo(expression.substr(i + 1), memo);
+                
+                for (int l : left) {
+                    for (int r : right) {
+                        if (expression[i] == '+') results.push_back(l + r);
+                        else if (expression[i] == '-') results.push_back(l - r);
+                        else if (expression[i] == '*') results.push_back(l * r);
+                    }
+                }
+            }
+        }
+        
+        if (!hasOperator) {
+            results.push_back(stoi(expression));
+        }
+        
+        memo[expression] = results;
+        return results;
+    }
+};
