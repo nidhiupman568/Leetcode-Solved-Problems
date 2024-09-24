@@ -1,0 +1,51 @@
+class Solution {
+private:
+    struct TrieNode {
+        TrieNode* children[10] = {};
+        int count = 0;
+    };
+    
+    TrieNode* root;
+    
+    void insert(int num) {
+        TrieNode* node = root;
+        for (char c : to_string(num)) {
+            int digit = c - '0';
+            if (!node->children[digit]) {
+                node->children[digit] = new TrieNode();
+            }
+            node = node->children[digit];
+            node->count++;
+        }
+    }
+    
+    int findLongestPrefix(int num) {
+        TrieNode* node = root;
+        int length = 0;
+        for (char c : to_string(num)) {
+            int digit = c - '0';
+            if (!node->children[digit] || node->children[digit]->count == 0) {
+                break;
+            }
+            node = node->children[digit];
+            length++;
+        }
+        return length;
+    }
+
+public:
+    int longestCommonPrefix(vector<int>& arr1, vector<int>& arr2) {
+        root = new TrieNode();
+        
+        for (int num : arr1) {
+            insert(num);
+        }
+        
+        int maxLength = 0;
+        for (int num : arr2) {
+            maxLength = max(maxLength, findLongestPrefix(num));
+        }
+        
+        return maxLength;
+    }
+};
