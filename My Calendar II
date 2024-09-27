@@ -1,0 +1,28 @@
+#include <vector>
+#include <algorithm>
+
+class MyCalendarTwo {
+private:
+    std::vector<std::pair<int, int>> bookings;
+    std::vector<std::pair<int, int>> overlaps;
+
+public:
+    MyCalendarTwo() {}
+    
+    bool book(int start, int end) {
+        for (const auto& overlap : overlaps) {
+            if (start < overlap.second && end > overlap.first) {
+                return false;
+            }
+        }
+        
+        for (const auto& booking : bookings) {
+            if (start < booking.second && end > booking.first) {
+                overlaps.emplace_back(std::max(start, booking.first), std::min(end, booking.second));
+            }
+        }
+        
+        bookings.emplace_back(start, end);
+        return true;
+    }
+};
