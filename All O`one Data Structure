@@ -1,0 +1,75 @@
+#include <unordered_map>
+#include <list>
+#include <string>
+
+class AllOne {
+private:
+    struct Node {
+        int count;
+        std::unordered_set<std::string> keys;
+        Node(int c) : count(c) {}
+    };
+    
+    std::list<Node> nodes;
+    std::unordered_map<std::string, std::list<Node>::iterator> keyMap;
+
+public:
+    AllOne() {}
+    
+    void inc(string key) {
+        if (keyMap.find(key) == keyMap.end()) {
+            if (nodes.empty() || nodes.front().count != 1) {
+                nodes.push_front(Node(1));
+            }
+            nodes.front().keys.insert(key);
+            keyMap[key] = nodes.begin();
+        } else {
+            auto it = keyMap[key];
+            auto nxt = std::next(it);
+            if (nxt == nodes.end() || nxt->count != it->count + 1) {
+                nxt = nodes.insert(nxt, Node(it->count + 1));
+            }
+            nxt->keys.insert(key);
+            keyMap[key] = nxt;
+            it->keys.erase(key);
+            if (it->keys.empty()) {
+                nodes.erase(it);
+            }
+        }
+    }
+    
+    void dec(string key) {
+        auto it = keyMap[key];
+        if (it->count > 1) {
+            auto prev = std::prev(it);
+            if (it == nodes.begin() || prev->count != it->count - 1) {
+                prev = nodes.insert(it, Node(it->count - 1));
+            }
+            prev->keys.insert(key);
+            keyMap[key] = prev;
+        } else {
+            keyMap.erase(key);
+        }
+        it->keys.erase(key);
+        if (it->keys.empty()) {
+            nodes.erase(it);
+        }
+    }
+    
+    string getMaxKey() {
+        return nodes.empty() ? "" : *nodes.back().keys.begin();
+    }
+    
+    string getMinKey() {
+        return nodes.empty() ? "" : *nodes.front().keys.begin();
+    }
+};
+
+/**
+ * Your AllOne object will be instantiated and called as such:
+ * AllOne* obj = new AllOne();
+ * obj->inc(key);
+ * obj->dec(key);
+ * string param_3 = obj->getMaxKey();
+ * string param_4 = obj->getMinKey();
+ */
