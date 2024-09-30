@@ -1,0 +1,38 @@
+class CustomStack {
+private:
+    vector<int> stack;
+    vector<int> inc;
+    int maxSize;
+
+public:
+    CustomStack(int maxSize) : maxSize(maxSize) {
+        stack.reserve(maxSize);
+        inc.reserve(maxSize);
+    }
+    
+    void push(int x) {
+        if (stack.size() < maxSize) {
+            stack.push_back(x);
+            inc.push_back(0);
+        }
+    }
+    
+    int pop() {
+        if (stack.empty()) return -1;
+        
+        int result = stack.back() + inc.back();
+        if (stack.size() > 1) {
+            inc[stack.size() - 2] += inc.back();
+        }
+        
+        stack.pop_back();
+        inc.pop_back();
+        
+        return result;
+    }
+    
+    void increment(int k, int val) {
+        int i = min(k, static_cast<int>(stack.size())) - 1;
+        if (i >= 0) inc[i] += val;
+    }
+};
