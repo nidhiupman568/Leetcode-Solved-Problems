@@ -1,0 +1,34 @@
+#include <algorithm>
+#include <vector>
+#include <unordered_map>
+
+class Solution {
+public:
+    vector<int> arrayRankTransform(vector<int>& arr) {
+        if (arr.empty()) return {};
+        
+        // Create a copy of the original array
+        vector<int> sorted = arr;
+        
+        // Sort the copy
+        sort(sorted.begin(), sorted.end());
+        
+        // Create a map to store the rank of each unique element
+        unordered_map<int, int> rank;
+        int currentRank = 1;
+        
+        // Assign ranks to unique elements
+        for (int num : sorted) {
+            if (rank.find(num) == rank.end()) {
+                rank[num] = currentRank++;
+            }
+        }
+        
+        // Transform the original array
+        for (int& num : arr) {
+            num = rank[num];
+        }
+        
+        return arr;
+    }
+};
