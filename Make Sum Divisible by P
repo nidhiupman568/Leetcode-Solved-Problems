@@ -1,0 +1,33 @@
+class Solution {
+public:
+    int minSubarray(vector<int>& nums, int p) {
+        int n = nums.size();
+        long long totalSum = 0;
+        for (int num : nums) {
+            totalSum += num;
+        }
+        
+        int target = totalSum % p;
+        if (target == 0) return 0;
+        
+        unordered_map<int, int> prefixSumMap;
+        prefixSumMap[0] = -1;
+        
+        int result = n;
+        long long currentSum = 0;
+        
+        for (int i = 0; i < n; i++) {
+            currentSum += nums[i];
+            int remainder = currentSum % p;
+            
+            int complement = (remainder - target + p) % p;
+            if (prefixSumMap.count(complement)) {
+                result = min(result, i - prefixSumMap[complement]);
+            }
+            
+            prefixSumMap[remainder] = i;
+        }
+        
+        return result < n ? result : -1;
+    }
+};
