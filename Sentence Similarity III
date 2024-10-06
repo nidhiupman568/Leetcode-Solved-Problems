@@ -1,0 +1,29 @@
+class Solution {
+public:
+    bool areSentencesSimilar(string sentence1, string sentence2) {
+        if (sentence1.length() < sentence2.length()) {
+            swap(sentence1, sentence2);
+        }
+        
+        int i = 0, j = 0;
+        int n1 = sentence1.length(), n2 = sentence2.length();
+        
+        // Match words from the beginning
+        while (i < n2 && sentence1[i] == sentence2[i]) {
+            if (sentence1[i] == ' ') i++;
+            i++;
+        }
+        
+        // If perfect match or sentence2 is a prefix of sentence1
+        if (i == n2) return true;
+        
+        // Match words from the end
+        while (j < n2 - i && sentence1[n1 - 1 - j] == sentence2[n2 - 1 - j]) {
+            if (sentence1[n1 - 1 - j] == ' ') j++;
+            j++;
+        }
+        
+        // Check if all words in sentence2 are matched
+        return i + j == n2 && (i == 0 || j == 0 || sentence1[i-1] == ' ' || sentence1[n1-j] == ' ');
+    }
+};
