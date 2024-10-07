@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int minLength(string s) {
+        // Reserve space to avoid reallocations
+        int n = s.length();
+        if(n < 2) return n;  // Early return for small strings
+        
+        // Use char array instead of vector for better cache performance
+        char stack[101];  // Based on constraints: 1 <= s.length <= 100
+        int top = 0;
+        
+        // Use pointer for faster string traversal
+        const char* ptr = s.c_str();
+        
+        // Manual loop unrolling for better performance
+        while(*ptr) {
+            char curr = *ptr;
+            if(top > 0 && ((curr == 'B' && stack[top-1] == 'A') || 
+                          (curr == 'D' && stack[top-1] == 'C'))) {
+                --top;
+            } else {
+                stack[top++] = curr;
+            }
+            ++ptr;
+        }
+        
+        return top;
+    }
+};
