@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int minSwaps(string s) {
+        int mismatched = 0;
+        
+        for (char c : s) {
+            if (c == '[') {
+                mismatched++;
+            } else if (mismatched > 0) {
+                mismatched--;
+            }
+        }
+        
+        return (mismatched + 1) / 2;
+    }
+};
