@@ -1,0 +1,44 @@
+#include <queue>
+#include <algorithm>
+
+class Solution {
+public:
+    int smallestChair(vector<vector<int>>& times, int targetFriend) {
+        // Sort times based on arrival time
+        vector<vector<int>> sortedTimes = times;
+        sort(sortedTimes.begin(), sortedTimes.end());
+        
+        // Priority queue for available chairs
+        priority_queue<int, vector<int>, greater<int>> availableChairs;
+        for (int i = 0; i < times.size(); ++i) {
+            availableChairs.push(i);
+        }
+        
+        // Priority queue for occupied chairs (leaving time, chair number)
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> occupiedChairs;
+        
+        for (const auto& time : sortedTimes) {
+            int arrival = time[0], leaving = time[1];
+            
+            // Free up chairs of friends who have left
+            while (!occupiedChairs.empty() && occupiedChairs.top().first <= arrival) {
+                availableChairs.push(occupiedChairs.top().second);
+                occupiedChairs.pop();
+            }
+            
+            // Assign the smallest available chair
+            int chair = availableChairs.top();
+            availableChairs.pop();
+            
+            // If this is the target friend, return the chair number
+            if (time == times[targetFriend]) {
+                return chair;
+            }
+            
+            // Add this chair to occupied chairs
+            occupiedChairs.push({leaving, chair});
+        }
+        
+        return -1; // This line should never be reached if input is valid
+    }
+};
