@@ -1,0 +1,26 @@
+#include <queue>
+#include <algorithm>
+
+class Solution {
+public:
+    int minGroups(vector<vector<int>>& intervals) {
+        // Sort intervals based on start time
+        sort(intervals.begin(), intervals.end());
+        
+        // Min heap to store end times of groups
+        priority_queue<int, vector<int>, greater<int>> pq;
+        
+        for (const auto& interval : intervals) {
+            if (!pq.empty() && pq.top() < interval[0]) {
+                // If the earliest ending group ends before current interval starts,
+                // we can reuse that group
+                pq.pop();
+            }
+            // Add the end time of current interval to the heap
+            pq.push(interval[1]);
+        }
+        
+        // The size of the heap is the minimum number of groups needed
+        return pq.size();
+    }
+};
