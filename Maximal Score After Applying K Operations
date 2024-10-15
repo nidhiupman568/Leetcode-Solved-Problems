@@ -1,0 +1,20 @@
+#include <queue>
+#include <vector>
+#include <cmath>
+
+class Solution {
+public:
+    long long maxKelements(vector<int>& nums, int k) {
+        priority_queue<int> pq(nums.begin(), nums.end());
+        long long score = 0;
+        
+        while (k--) {
+            int max_elem = pq.top();
+            pq.pop();
+            score += max_elem;
+            pq.push(ceil(max_elem / 3.0));
+        }
+        
+        return score;
+    }
+};
