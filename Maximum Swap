@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int maximumSwap(int num) {
+        string numStr = to_string(num);
+        int n = numStr.length();
+        vector<int> lastOccurrence(10, -1);
+        
+        // Store the last occurrence of each digit
+        for (int i = 0; i < n; i++) {
+            lastOccurrence[numStr[i] - '0'] = i;
+        }
+        
+        // Find the first digit that can be swapped for a larger digit
+        for (int i = 0; i < n; i++) {
+            for (int d = 9; d > numStr[i] - '0'; d--) {
+                if (lastOccurrence[d] > i) {
+                    swap(numStr[i], numStr[lastOccurrence[d]]);
+                    return stoi(numStr);
+                }
+            }
+        }
+        
+        return num;
+    }
+};
