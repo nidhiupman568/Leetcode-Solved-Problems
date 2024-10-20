@@ -1,0 +1,34 @@
+class Solution {
+public:
+    bool parseBoolExpr(string expression) {
+        vector<char> stack;
+        
+        for (char c : expression) {
+            if (c != ')') {
+                if (c != ',') stack.push_back(c);
+            } else {
+                int trueCount = 0, falseCount = 0;
+                while (stack.back() != '(') {
+                    char val = stack.back();
+                    stack.pop_back();
+                    if (val == 't') trueCount++;
+                    else if (val == 'f') falseCount++;
+                }
+                stack.pop_back(); // Remove '('
+                
+                char op = stack.back();
+                stack.pop_back();
+                
+                if (op == '!') {
+                    stack.push_back(falseCount ? 't' : 'f');
+                } else if (op == '&') {
+                    stack.push_back(falseCount == 0 ? 't' : 'f');
+                } else { // op == '|'
+                    stack.push_back(trueCount > 0 ? 't' : 'f');
+                }
+            }
+        }
+        
+        return stack.back() == 't';
+    }
+};
