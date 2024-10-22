@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int maxUniqueSplit(string s) {
+        unordered_set<string> seen;
+        return backtrack(s, 0, seen);
+    }
+    
+private:
+    int backtrack(const string& s, int start, unordered_set<string>& seen) {
+        if (start == s.length()) {
+            return 0;
+        }
+        
+        int maxSplit = 0;
+        for (int i = start; i < s.length(); ++i) {
+            string substr = s.substr(start, i - start + 1);
+            if (seen.find(substr) == seen.end()) {
+                seen.insert(substr);
+                int split = 1 + backtrack(s, i + 1, seen);
+                maxSplit = max(maxSplit, split);
+                seen.erase(substr);
+            }
+        }
+        
+        return maxSplit;
+    }
+};
