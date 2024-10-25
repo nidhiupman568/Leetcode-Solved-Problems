@@ -1,0 +1,32 @@
+class Solution {
+public:
+    vector<string> removeSubfolders(vector<string>& folder) {
+        // Sort the folders lexicographically
+        sort(folder.begin(), folder.end());
+        
+        vector<string> result;
+        result.push_back(folder[0]); // Add first folder
+        
+        // Compare each folder with the last added valid folder
+        for(int i = 1; i < folder.size(); i++) {
+            string& lastValid = result.back();
+            string& current = folder[i];
+            
+            // Get length of last valid folder
+            int len = lastValid.length();
+            
+            // Check if current folder is not a subfolder of last valid folder
+            // Conditions:
+            // 1. Current folder length should be less than last valid folder length OR
+            // 2. Last valid folder should not be a prefix of current folder OR
+            // 3. If it is a prefix, next character must not be '/'
+            if(current.length() < len || 
+               current.substr(0, len) != lastValid || 
+               current[len] != '/') {
+                result.push_back(current);
+            }
+        }
+        
+        return result;
+    }
+};
