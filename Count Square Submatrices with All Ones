@@ -1,0 +1,41 @@
+class Solution {
+public:
+    int countSquares(vector<vector<int>>& matrix) {
+        // Get dimensions of matrix
+        int m = matrix.size();
+        int n = matrix[0].size();
+        
+        // Initialize count for total squares
+        int result = 0;
+        
+        // Use the input matrix itself as dp array to save space
+        // matrix[i][j] will store the size of largest square ending at (i,j)
+        
+        // First row
+        for(int j = 0; j < n; j++) {
+            result += matrix[0][j];
+        }
+        
+        // First column (excluding [0][0] as it's already counted)
+        for(int i = 1; i < m; i++) {
+            result += matrix[i][0];
+        }
+        
+        // Process rest of the matrix
+        for(int i = 1; i < m; i++) {
+            for(int j = 1; j < n; j++) {
+                if(matrix[i][j] == 1) {
+                    // Take minimum of left, top, and diagonal + 1
+                    matrix[i][j] = 1 + min({
+                        matrix[i-1][j],
+                        matrix[i][j-1],
+                        matrix[i-1][j-1]
+                    });
+                    result += matrix[i][j];
+                }
+            }
+        }
+        
+        return result;
+    }
+};
