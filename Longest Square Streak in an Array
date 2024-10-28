@@ -1,0 +1,44 @@
+class Solution {
+public:
+    int longestSquareStreak(vector<int>& nums) {
+    
+        sort(nums.begin(), nums.end());
+        
+       
+        nums.erase(unique(nums.begin(), nums.end()), nums.end());
+        
+     
+        unordered_set<long long> numSet;
+        for(int num : nums) {
+            numSet.insert(num);
+        }
+        
+        int maxStreak = -1;
+        
+       
+        for(int num : nums) {
+            int currentStreak = 1;
+            long long current = num;
+            
+           
+            while(current <= 31622) { 
+                long long nextSquare = current * current;
+                if(nextSquare > 100000) break;
+                
+                if(numSet.find(nextSquare) != numSet.end()) {
+                    currentStreak++;
+                    current = nextSquare;
+                } else {
+                    break;
+                }
+            }
+            
+          
+            if(currentStreak >= 2) {
+                maxStreak = max(maxStreak, currentStreak);
+            }
+        }
+        
+        return maxStreak;
+    }
+};
