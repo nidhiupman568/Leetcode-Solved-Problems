@@ -1,0 +1,47 @@
+class Solution {
+public:
+    // Helper function for DP
+    long long solve(vector<int>& robots, vector<vector<int>>& factories, 
+                   vector<vector<long long>>& dp, int robotIdx, int factoryIdx) {
+        int m = robots.size(), n = factories.size();
+        
+        // Base cases
+        if (robotIdx == m) return 0;  // All robots assigned
+        if (factoryIdx == n) return LLONG_MAX/2;  // No more factories but robots remain
+        
+        // If already computed
+        if (dp[robotIdx][factoryIdx] != -1) 
+            return dp[robotIdx][factoryIdx];
+        
+        // Try not using current factory
+        long long ans = solve(robots, factories, dp, robotIdx, factoryIdx + 1);
+        
+        // Try using current factory for k robots (1 to limit)
+        long long sum = 0;
+        for (int k = 1; k <= factories[factoryIdx][1] && robotIdx + k - 1 < m; k++) {
+            // Calculate cost for k robots
+            sum += abs(1LL * factories[factoryIdx][0] - robots[robotIdx + k - 1]);
+            
+            long long next = solve(robots, factories, dp, robotIdx + k, factoryIdx + 1);
+            if (next != LLONG_MAX/2) {
+                ans = min(ans, sum + next);
+            }
+        }
+        
+        return dp[robotIdx][factoryIdx] = ans;
+    }
+    
+    long long minimumTotalDistance(vector<int>& robot, vector<vector<int>>& factory) {
+        // Sort both arrays for optimal assignment
+        sort(robot.begin(), robot.end());
+        sort(factory.begin(), factory.end());
+        
+        int m = robot.size();
+        int n = factory.size();
+        
+        // Initialize DP array
+        vector<vector<long long>> dp(m + 1, vector<long long>(n + 1, -1));
+        
+        return solve(robot, factory, dp, 0, 0);
+    }
+};
