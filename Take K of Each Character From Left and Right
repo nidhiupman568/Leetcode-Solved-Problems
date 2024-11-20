@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int takeCharacters(string s, int k) {
+        
+       int N = s.length(),j = 0, ans = N,window = 0;
+       unordered_map<char,int>count;
+
+       for(auto c : s)
+            count[c]++;
+
+       if(count['a'] < k || count['b'] <k || count['c']<k)  
+            return -1;
+
+       for(int i=0;i<N;i++){
+
+          count[s[i]]--;
+          window++;
+
+            while(count[s[i]]<k){
+                count[s[j++]]++;
+                window--;
+            }
+            
+          ans = min(ans,N- window);
+       }
+
+        return ans;
+    }
+};
