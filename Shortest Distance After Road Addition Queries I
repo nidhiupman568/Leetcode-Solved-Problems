@@ -1,0 +1,29 @@
+class Solution {
+    vector<vector<int>> g;
+    int bfs(int s, int e) {
+        vector<bool> v(g.size());
+        queue<pair<int, int>> q({{s, 0}});
+        v[s] = true;
+        while (!q.empty()) {
+            auto [n, d] = q.front(); q.pop();
+            if (n == e) return d;
+            for (int nb : g[n])
+                if (!v[nb]) {
+                    v[nb] = true;
+                    q.push({nb, d + 1});
+                }
+        }
+        return -1;
+    }
+public:
+    vector<int> shortestDistanceAfterQueries(int n, vector<vector<int>>& q) {
+        g.resize(n);
+        for (int i = 0; i < n - 1; i++) g[i].push_back(i + 1);
+        vector<int> a;
+        for (auto& x : q) {
+            g[x[0]].push_back(x[1]);
+            a.push_back(bfs(0, n - 1));
+        }
+        return a;
+    }
+};
