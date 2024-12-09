@@ -1,0 +1,20 @@
+class Solution {
+public:
+    vector<bool> isArraySpecial(vector<int>& nums, vector<vector<int>>& q) {       
+        vector<int> specialPair; 
+        for (int i = 0;i<nums.size()-1;i++){
+            specialPair.push_back((nums[i]+nums[i+1])%2);
+        }
+
+        vector<int> rngSum {0};
+        for (int i = 0;i<specialPair.size();i++){
+            rngSum.push_back(rngSum.back()+specialPair[i]);
+        }
+
+        vector<bool> res;
+        for (int i = 0;i<q.size();i++){
+            res.push_back(rngSum[q[i][1]]-rngSum[q[i][0]]==q[i][1]-q[i][0]);
+        }
+        return res;
+    }
+};
