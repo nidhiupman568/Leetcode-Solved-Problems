@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int maximumBeauty(vector<int>& nums, int k) {
+        vector<int> line(100002, 0);
+    for(int n: nums) { 
+        int start = (n-k >= 0)?n-k: 0;
+        int end = (n + k + 1 < line.size())?n+k+1: line.size()-1;
+        line[start]++; line[end]--;
+    }
+    int ans = line[0];
+    for(int i = 1; i < line.size(); ++i){
+        line[i] += line[i-1];
+        ans = max(ans, line[i]);
+    }
+    return ans;
+    }
+};
