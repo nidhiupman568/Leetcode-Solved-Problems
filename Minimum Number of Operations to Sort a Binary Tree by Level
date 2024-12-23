@@ -1,0 +1,85 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    int steps_for(vector <int> &A)
+    {
+        vector <int> sorted_A = A; 
+        sort(sorted_A.begin(), sorted_A.end());
+        
+        map <int, int> position;
+        for(int i = 0; i < A.size(); i++)
+        {
+            position[A[i]] = i;
+        }
+        
+        int steps = 0;
+        for(int i = 0; i < A.size(); i++)
+        {
+            if(A[i] == sorted_A[i])
+            {
+                continue;
+            }
+            
+            int p = position[sorted_A[i]];
+            position[sorted_A[i]] = i;
+            position[A[i]] = p;
+            swap(A[i], A[p]);
+            
+            steps++;
+        }
+        return steps;
+    }
+    
+    int minimumOperations(TreeNode* root) {
+        queue <TreeNode*> Q; 
+        map <TreeNode*, int> node_level;
+        vector <vector <int> > level; 
+        Q.push(root);
+        node_level[root] = 0;
+        
+        while(!Q.empty())
+        {
+            TreeNode* current = Q.front();
+            Q.pop();
+            
+            if(node_level[current] >= level.size())
+            {
+                vector <int> new_level;
+                level.push_back(new_level);
+            }
+            
+            level[node_level[current]].push_back(current->val);
+            
+            if(current->left != NULL)
+            {
+                node_level[current->left] = node_level[current] + 1;
+                Q.push(current->left);
+            }
+            
+            if(current->right != NULL)
+            {
+                node_level[current->right] = node_level[current] + 1;
+                Q.push(current->right);
+            }
+        }
+        
+        int operations = 0;
+        for(int i = 1; i < level.size() ; i++)
+        {
+            operations += steps_for(level[i]);
+        }
+        
+        return operations;
+    }
+};
