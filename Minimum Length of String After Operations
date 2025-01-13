@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int minimumLength(string s) {
+        unordered_map<char, int> charFrequency;
+        
+        // Count the frequency of each character
+        for (char c : s) {
+            charFrequency[c]++;
+            // If frequency reaches 3, reset it to 1
+            if (charFrequency[c] == 3) {
+                charFrequency[c] = 1;
+            }
+        }
+        
+        // Sum up the remaining frequencies
+        int remainingLength = 0;
+        for (const auto& pair : charFrequency) {
+            remainingLength += pair.second;
+        }
+        
+        return remainingLength;
+    }
+};
