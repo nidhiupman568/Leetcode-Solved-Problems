@@ -1,0 +1,60 @@
+class Solution {
+public:
+    // Function to check if a string is a palindrome
+    bool isPalindrome(const string& s) {
+        int i = 0, j = s.size() - 1;
+        while (i < j) {
+            if (s[i++] != s[j--]) return false;
+        }
+        return true;
+    }
+
+    // Function to convert a number to base-k and return it as a string
+    string toBaseK(long long num, int k) {
+        string res = "";
+        while (num > 0) {
+            res += (num % k) + '0';
+            num /= k;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+
+    // Function to generate palindromes
+    vector<long long> generatePalindromes(int length, bool isOdd) {
+        vector<long long> palindromes;
+        int halfLength = (length + 1) / 2;
+        int start = pow(10, halfLength - 1);
+        int end = pow(10, halfLength);
+
+        for (int i = start; i < end; ++i) {
+            string firstHalf = to_string(i);
+            string secondHalf = firstHalf;
+            if (isOdd) secondHalf.pop_back();
+            reverse(secondHalf.begin(), secondHalf.end());
+            string full = firstHalf + secondHalf;
+            palindromes.push_back(stoll(full));
+        }
+        return palindromes;
+    }
+
+    long long kMirror(int k, int n) {
+        long long sum = 0;
+        int length = 1;
+
+        while (n > 0) {
+            for (int isOdd = 0; isOdd <= 1; ++isOdd) {
+                vector<long long> palins = generatePalindromes(length, isOdd);
+                for (auto num : palins) {
+                    if (isPalindrome(toBaseK(num, k))) {
+                        sum += num;
+                        if (--n == 0) return sum;
+                    }
+                }
+            }
+            ++length;
+        }
+
+        return sum;
+    }
+};
