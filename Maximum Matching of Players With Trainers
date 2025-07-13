@@ -1,0 +1,37 @@
+class Solution 
+{
+public:
+    int matchPlayersAndTrainers(vector<int>& players, vector<int>& trainers) 
+    {
+        // Step 1: Sort the players by required strength
+        sort(players.begin(), players.end());
+
+        // Step 2: Sort the trainers by capacity
+        sort(trainers.begin(), trainers.end());
+
+        // Step 3: Initialize pointers and match counter
+        int i = 0;
+        int j = 0;
+        int count = 0;
+
+        // Step 4: Two-pointer approach to find matches
+        while (i < players.size() && j < trainers.size()) 
+        {
+            if (players[i] <= trainers[j]) 
+            {
+                // Trainer can train this player
+                count++;
+                i++;
+                j++;
+            } 
+            else 
+            {
+                // Trainer too weak, move to next one
+                j++;
+            }
+        }
+
+        // Step 5: Return result
+        return count;
+    }
+};
