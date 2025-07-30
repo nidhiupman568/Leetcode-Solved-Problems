@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int longestSubarray(vector<int>& nums) {
+        int maxNum = 0, result = 0;
+        int n = nums.size();
+        const int* data = nums.data();
+        
+        // Find max element
+        for (int i = 0; i < n; ++i) {
+            maxNum = (data[i] > maxNum) ? data[i] : maxNum;
+        }
+        
+        // Count longest streak
+        int streak = 0;
+        for (int i = 0; i < n; ++i) {
+            if (data[i] == maxNum) {
+                ++streak;
+            } else {
+                result = (streak > result) ? streak : result;
+                streak = 0;
+            }
+        }
+        
+        return (streak > result) ? streak : result;
+    }
+};
