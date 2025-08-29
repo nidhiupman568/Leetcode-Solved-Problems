@@ -1,0 +1,20 @@
+class Solution {
+public:
+
+    /*
+        sum of a + b = odd.
+
+        odd + even, even + odd.
+
+        odd in 1 to n => ceil(n/2).
+
+    */
+    using ll = long long;
+
+    long long flowerGame(int n, int m) {
+        ll oddN = (n + 1) / 2, eveN = n - oddN, oddM = (m+1)/2, eveM = m - oddM;
+
+        ll ans = (oddN * eveM) + (eveN * oddM);
+        return ans;
+    }
+};
