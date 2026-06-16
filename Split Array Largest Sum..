@@ -1,0 +1,37 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    bool possible (vector<int> nums, int k, int time){
+        int cnt_painter=1;
+        int total=0;
+        for(int i=0; i<nums.size() ; i++){
+            if(nums[i]+total <= time){
+                total+=nums[i];
+            }
+            else{
+                total=nums[i];
+                cnt_painter++;
+            }
+        }
+        return cnt_painter<=k;
+    }
+    int splitArray(vector<int>& nums, int k){
+        int high=0;
+        for(int i=0; i<nums.size(); i++){
+            high+=nums[i];
+        }
+        int low=*max_element(nums.begin(),nums.end());
+        while(low<=high){
+            int mid=(high+low)/2;
+            if(possible(nums,k,mid)){
+                high=mid-1;
+            }
+            else {
+                low=mid+1;
+            }
+        }
+        return low;
+    }
+};
