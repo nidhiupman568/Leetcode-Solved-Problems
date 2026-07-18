@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int minBitFlips(int start, int goal) {
+        // XOR start and goal to get a number where set bits represent differences
+        int xorResult = start ^ goal;
+        
+        // Count the number of set bits in xorResult
+        int count = 0;
+        while (xorResult) {
+            count += xorResult & 1;  // Check if least significant bit is set
+            xorResult >>= 1;         // Right shift by 1 bit
+        }
+        
+        return count;
+    }
+};
