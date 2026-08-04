@@ -1,0 +1,155 @@
+class Node {
+public:
+    int key, val, freq;
+    Node *prev, *next;
+
+    Node(int k, int v) {
+        key = k;
+        val = v;
+        freq = 1;              // New node starts with frequency 1
+        prev = next = nullptr;
+    }
+};
+
+class List {
+public:
+    int size;
+    Node *head, *tail;
+
+    List() {
+        size = 0;
+
+        // Dummy head and tail nodes
+        head = new Node(-1, -1);
+        tail = new Node(-1, -1);
+
+        head->next = tail;
+        tail->prev = head;
+    }
+
+    // Insert node right after head (Most Recently Used position)
+    void addFront(Node *node) {
+        node->next = head->next;
+        node->prev = head;
+        head->next->prev = node;
+        head->next = node;
+        size++;
+    }
+
+    // Remove a node from the list
+    void removeNode(Node *node) {
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
+        size--;
+    }
+
+    // Remove the Least Recently Used node (last node)
+    Node* removeLast() {
+        if (size == 0)
+            return nullptr;
+
+        Node *node = tail->prev;
+        removeNode(node);
+        return node;
+    }
+};
+
+class LFUCache {
+
+    int cap;
+    int currSize;
+    int minFreq;
+
+    // key -> node
+    unordered_map<int, Node*> keyNode;
+
+    // frequency -> corresponding LRU list
+    unordered_map<int, List*> freqList;
+
+    // Move node to the next frequency list
+    void updateFreq(Node *node) {
+
+        int freq = node->freq;
+
+        // Remove from current frequency list
+        freqList[freq]->removeNode(node);
+
+        // Update minimum frequency if needed
+        if (freq == minFreq && freqList[freq]->size == 0)
+            minFreq++;
+
+        node->freq++;
+
+        // Create new list if this frequency doesn't exist
+        if (freqList.find(node->freq) == freqList.end())
+            freqList[node->freq] = new List();
+
+        // Insert into new frequency list as Most Recently Used
+        freqList[node->freq]->addFront(node);
+    }
+
+public:
+
+    LFUCache(int capacity) {
+        cap = capacity;
+        currSize = 0;
+        minFreq = 0;
+    }
+
+    int get(int key) {
+
+        if (keyNode.find(key) == keyNode.end())
+            return -1;
+
+        Node *node = keyNode[key];
+
+        // Accessing a node increases its frequency
+        updateFreq(node);
+
+        return node->val;
+    }
+
+    void put(int key, int value) {
+        // Key already exists
+        if (keyNode.find(key) != keyNode.end()) {
+
+            Node *node = keyNode[key];
+            node->val = value;
+
+            // Updating value also counts as an access
+            updateFreq(node);
+            return;
+        }
+
+        // Cache is full, remove LFU node
+        if (currSize == cap) {
+
+            Node *node = freqList[minFreq]->removeLast();
+
+            keyNode.erase(node->key);
+            delete node;
+            currSize--;
+        }
+
+        // Create new node
+        Node *newNode = new Node(key, value);
+
+        minFreq = 1;
+
+        if (freqList.find(1) == freqList.end())
+            freqList[1] = new List();
+
+        // Insert into frequency 1 list
+        freqList[1]->addFront(newNode);
+
+        keyNode[key] = newNode;
+        currSize++;
+    }
+};
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache* obj = new LFUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
